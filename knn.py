@@ -1,18 +1,18 @@
-import numpy as np
 import csv
 import math
 import random
+import sys
 
 def get_classification(test_sample, distances):
     label = test_sample[-1]
     correct = 0
     wrong = 0
     for i in distances:
-        if label==i[0][-1]:
-            correct+=1
+        if label == i[0][-1]:
+            correct += 1
         else:
-            wrong+=1
-    if correct>wrong:
+            wrong += 1
+    if correct > wrong:
         return 1
     else:
         return 0
@@ -31,7 +31,7 @@ def train_model(training_data, testing_data, k):
             correct+=1
         else:
             wrong+=1
-    print(correct, wrong, correct*100/(correct+wrong))
+    print("Correctly classified: ", correct, "\nWrongly classified: ", wrong, "\nAccuracy: ", round(correct*100/(correct+wrong),2), "%")
 
 
 def calculate_euclidean_distance(point1, point2):
@@ -40,8 +40,8 @@ def calculate_euclidean_distance(point1, point2):
         sum+=(point1[i] - point2[i])**2
     return math.sqrt(sum)
 
-def create_data():
-    with open('Breast_cancer_data.csv', newline='') as f:
+def create_data(path):
+    with open(path, newline='') as f:
         reader = csv.reader(f)
         final_data = list(reader)
         final_data.pop(0)
@@ -56,9 +56,15 @@ def create_data():
     return training_data, testing_data
 
 def main():
-    training_data, testing_data = create_data()
-    train_model(training_data, testing_data, 5)
-
+    k_value = 0
+    path = ""
+    for i in range(len(sys.argv)):
+        if sys.argv[i] == "--path":
+            path = sys.argv[i+1]
+        if sys.argv[i] == "--k":
+            k_value = int(sys.argv[i+1])
+    training_data, testing_data = create_data(path)
+    train_model(training_data, testing_data, k_value)
 
 if __name__ == "__main__":
     main()
